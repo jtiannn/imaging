@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <title>CS194 Project 3: Fun with Frequencies and Gradients</title>
+  </head>
+  <body>
+    <h1 class="text-center">CS194 Project 3: Fun with Frequencies and Gradients</h1>
+    <h3 class="text-center">Jacky Tian</h3>
+    <div style="margin-left:40px">
+    <h5>Overview</h5>
+    <div style="margin-left:20px; margin-right:40px">
+    <p>
+      Tools like image blending and frequency manipulation are used often at the high level, so its necessary to understand the building blocks behind these tools. Throughout this project, the primary tools that were explored were:
+		1. Gaussian blurring in order to sharpen images
+		2. Creating hybrid images from a mix of two differing frequencies
+		3. Blending two images across a seam using image pyramids or gaussian/laplacian stacks
+		4. Fusion using the Gradient comparison across each pixel
+    </p>
+    <div style="margin-left:40px">
+    <h5>1.1 Image Sharpening</h5></div>
+    <div style="margin-left:20px; margin-right:40px">
+    <p>
+      I started by passing in an image, and computing the gaussian blurring of the image. I did this by using a gaussian kernel mask across the image, which could be computed automatically with a gaussian_filter generator in skimage, but I ended up creating my own, which worked fine. Essentially, the difference between the image and the gaussian blur is effectively an edge detector, which could be added on to the original image in order to enhance the edges, thus giving the perception of sharpening the image. Below, you can see the difference between the original image and the sharpened one.
+    </p>
+    </div>
+    <div class="row center-block">
+      <div class="offset-md-2 col-md-4">
+        <div class="thumbnail">
+          <a href="kobe.jpg">
+            <img src="kobe.jpg" alt="Kobe" style="width:100%">
+            <div class="caption text-center">
+              <p>Original</p>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="thumbnail">
+          <a href="kobe_sharp.jpg">
+            <img src="kobe_sharp.jpg" alt="Kobe_Sharp" style="width:100%">
+            <div class="caption text-center">
+              <p>Sharpened</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-left:40px">
+    <h5>1.2 Hybrid Images</h5></div>
+    <div style="margin-left:20px; margin-right:40px">
+    <p>
+      With hybrid images, the goal was to take two images, and essentially combine them into one such that from far away it would look like one image, but close up it would look like the other. This was done by first aligning the images such that they are relatively aligned by features, trying different gaussian kernels, and then applying them in order to create blurred images like before. The low frequency image is simply the blurred one, and to create the high frequency image, I found the difference between the original and the gaussian-blurred, like an edge detector. Then I took the average of the two images, and rescaled it to the rgb scale, which produced some scary, but effective looking hybrid pictures. Some of these turned out better than others, so for my favorite one I also depicted the frequency analysis throughout the process.
+    </p>
+    </div>
+    <div class="row center-block">
+      <div class="offset-md-2 col-md-4">
+        <div class="thumbnail">
+          <a href="zebra.jpg">
+            <img src="zebra.jpg" alt="Zebra" style="width:100%">
+          </a>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="thumbnail">
+          <a href="horse.jpeg">
+            <img src="horse.jpeg" alt="Horse" style="width:100%">
+          </a>
+        </div>
+      </div>
+      <div class="offset-md-4 col-md-4">
+        <div class="thumbnail">
+          <a href="horse.zebra.jpg">
+            <img src="horse.zebra.jpg" alt="Horsezebra" style="width:100%">
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="row center-block">
+      <div class="offset-md-2 col-md-4">
+        <div class="thumbnail">
+          <a href="happy.jpg">
+            <img src="happy.jpg" alt="Happy" style="width:100%">
+          </a>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="thumbnail">
+          <a href="sad.jpeg">
+            <img src="sad.jpeg" alt="Sad" style="width:100%">
+          </a>
+        </div>
+      </div>
+      <div class="offset-md-4 col-md-4">
+        <div class="thumbnail">
+          <a href="sad.happy.jpg">
+            <img src="sad.happy.jpg" alt="Happysad" style="width:100%">
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="row center-block">
+      <div class="offset-md-2 col-md-4">
+        <div class="thumbnail">
+          <a href="old.jpg">
+            <img src="old.jpg" alt="Old" style="width:100%">
+          </a>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="thumbnail">
+          <a href="young.jpg">
+            <img src="young.jpg" alt="Young" style="width:100%">
+          </a>
+        </div>
+      </div>
+      <div class="offset-md-4 col-md-4">
+        <div class="thumbnail">
+          <a href="oldyoung.jpg">
+            <img src="oldyoung.jpg" alt="Oldyoung" style="width:100%">
+          </a>
+        </div>
+      </div>
+    </div>
+    <h5>Frequency Analysis</h5>
+    <div class="row center-block">
+      <div class="offset-md-2 col-md-4">
+        <div class="thumbnail">
+          <a href="old_ft.jpg">
+            <img src="old_ft.jpg" alt="Oldft" style="width:100%">
+            <div class="caption text-center">
+              <p>old: fourier transform</p>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="offset-md-2 col-md-4">
+        <div class="thumbnail">
+          <a href="young_ft.jpg">
+            <img src="young_ft.jpg" alt="Youngft" style="width:100%">
+            <div class="caption text-center">
+              <p>young: fourier transform</p>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="offset-md-2 col-md-4">
+        <div class="thumbnail">
+          <a href="low_ft.jpg">
+            <img src="low_ft.jpg" alt="Lowft" style="width:100%">
+            <div class="caption text-center">
+              <p>low pass: fourier transform</p>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="offset-md-2 col-md-4">
+        <div class="thumbnail">
+          <a href="high_ft.jpg">
+            <img src="high_ft.jpg" alt="Highft" style="width:100%">
+            <div class="caption text-center">
+              <p>high pass: fourier transform</p>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="offset-md-2 col-md-4">
+        <div class="thumbnail">
+          <a href="hybrid_ft.jpg">
+            <img src="hybrid_ft.jpg" alt="Hybridft" style="width:100%">
+            <div class="caption text-center">
+              <p>hybrid image: fourier transform</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+	<div style="margin-left:40px">
+    <h5>1.3 Gaussian and Laplacian Stacks</h5></div>
+    <div style="margin-left:20px; margin-right:40px">
+	<p>
+      Similar to image pyramids, stacks are effectively the same image filtered over and over again. Essentially, the image is going to become blurrier each time, thus creating a gaussian stack. The laplacian stack is similar, except the gaussian is subtracted from the original. The gaussian and laplacian stack is displayed for varying gaussian filters, each with 2x the sigma compared to the previous filter.
+    </p>
+    </div>
+    <div class="row center-block">
+      <div class="ol-md-4">
+        <div class="thumbnail">
+          <a href="monalisa.jpg">
+            <img src="monalisa.jpg" alt="Monalisa" style="width:100%">
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="row center-block">
+      <div class="col-md-4">
+        <div class="thumbnail">
+          <a href="monalisa_stack.jpg">
+            <img src="monalisa_stack.jpg" alt="Monalisastack" style="width:100%">
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-left:40px">
+    <h5>1.4 Multiresolution Blending</h5></div>
+    <div style="margin-left:20px; margin-right:40px">
+	<p>
+      Multiresolution blending is essentially combining two images across a seam. My initial attempt was to simply take half of one image, and half of another using a mask, and simply copy over the source image onto the other half of the target image. However, the line or seam that separated the two was extremely prominent, thus I opted for an approach where I find a window near the seam, and within that window take a certain percentage from each image, which created a smooth transition for a blending effect. I tested my approach on the apple and orange, and tried some irregular masks as shown below. 
+      - Masks were effectively numpy binary arrays where a 1 represented taking from the source image, while a 0 represented taking from the other.
+      - The last image definitely isn't perfect, and is rather creepy, but I learned that images and its features need to be aligned correctly and have similar proportions in order to blend well without resizing.
+    </p>
+    </div>
+    <div class="row center-block">
+      <div class="offset-md-2 col-md-4">
+        <div class="thumbnail">
+          <a href="apple.jpeg">
+            <img src="apple.jpeg" alt="Apple" style="width:100%">
+          </a>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="thumbnail">
+          <a href="old.jpg">
+            <img src="old.jpg" alt="Oldy" style="width:100%">
+          </a>
+        </div>
+      </div>
+      <div class="offset-md-4 col-md-4">
+        <div class="thumbnail">
+          <a href="apple.old.jpg">
+            <img src="apple.old.jpg" alt="Creepy Apple" style="width:100%">
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="row center-block">
+      <div class="offset-md-2 col-md-4">
+        <div class="thumbnail">
+          <a href="trump.jpg">
+            <img src="trump.jpg" alt="Trump" style="width:100%">
+          </a>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="thumbnail">
+          <a href="sad.jpeg">
+            <img src="sad.jpeg" alt="Sad" style="width:100%">
+          </a>
+        </div>
+      </div>
+      <div class="offset-md-4 col-md-4">
+        <div class="thumbnail">
+          <a href="sad.trump.jpg">
+            <img src="sad.trump.jpg" alt="Sadtrump" style="width:100%">
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-left:40px">
+    <h5>2.1 Gradient Domain Fusion, Toy Problem</h5></div>
+    <div style="margin-left:20px; margin-right:40px">
+	<p>
+      With gradient domain fusion, the idea is to take an image, and insert into another picture smoothly. If you just inserted it in, the boundaries would be off, the colors wouldn't match, and the background would probably not be blended in smoothly. This idea of gradient domain fusion allows us to carve out the source image, and insert it nicely into our target image. The idea is to compare each pixel to its neighbors, essentially creating 4 * pixels number of equations. This can then be mapped to a linear system of equations, which I solved using a sparse matrix A, and the sparse library of scipy. 
+    </p>
+    </div>
+    <div class="row center-block">
+      <div class="offset-md-2 col-md-4">
+        <div class="thumbnail">
+          <a href="toy.png">
+            <img src="toy.png" alt="Toy" style="width:100%">
+            <div class="caption text-center">
+              <p>Original Image</p>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="offset-md-2 col-md-4">
+        <div class="thumbnail">
+          <a href="new_toy.jpg">
+            <img src="new_toy.jpg" alt="Newtoy" style="width:100%">
+            <div class="caption text-center">
+              <p>Recreated Image using Least Squares</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    </div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  </body>
+</html>

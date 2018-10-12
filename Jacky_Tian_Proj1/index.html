@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <title>CS194 Project 1: Colorizing the Prokudin-Gorskii photo collection</title>
+  </head>
+  <body>
+    <h1 class="text-center">CS194 Project 1: Colorizing the Prokudin-Gorskii photo collection</h1>
+    <h3 class="text-center">Jacky Tian</h3>
+    <div style="margin-left:40px">
+    <h5>Overview</h5>
+    <div style="margin-left:20px; margin-right:40px">
+    <p>
+      Sergei Mikhailovich Prokudin-Gorskii created the possibility for color pictures back when everything was still in black and white. Essentially, he used 3 different color filters to take the same picture, and then the RGB image was able to be recreated from aligning the 3 different exposures on top of each other. 
+    </p>
+    <p>
+      I started by breaking down the image block into its respective RGB components, ignoring a percentage of each edge to compensate for the border, and then aligned the green and red filter on top of the blue one (for some images like Emir and Monastery, I aligned the blue and red on top of the green, because of the heavy focus on the blue in those images, which would render the green and red filters quite useless in the algorithm). I then used a NCC algorithm, which is a normalization across the two images. For the larger images, I used an image pyramid to first scale the filters, then used the NCC once the image was small enough to run efficiently on. Finally, with the shifts and displacements, I aligned the 3 filters on top of each other using the skimage library, and produced a color image.
+    </p>
+    <p>
+      Images like Icon and Village cam out a little blurry as it was challenging to align images where the core of the image was very one dimensional in color. For each filter, almost all of the image was more or less a shade of dark grey, and in addition to the complicated edges and details, the image did not come out to be as aligned as some of the others.
+    </p>
+    </div>
+    <h5>Example Images and Additional Images from the Prokudin-Gorskii Collection</h5>
+    <div class="row center-block">
+      <div class="offset-md-2 col-md-4">
+        <div class="thumbnail">
+          <a href="out_path/cathedral.jpg">
+            <img src="out_path/cathedral.jpg" alt="Cathedral" style="width:100%">
+            <div class="caption text-center">
+              <p>Cathedral: G=[5, 2], R=[12, 3]</p>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="thumbnail">
+          <a href="out_path/monastery.jpg">
+            <img src="out_path/monastery.jpg" alt="Monastery" style="width:100%">
+            <div class="caption text-center">
+              <p>Monastery: B=[3, 0], R=[6, 1]</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="row center-block">
+      <div class="offset-md-2 col-md-4">
+        <div class="thumbnail">
+          <a href="out_path/settlers.jpg">
+            <img src="out_path/settlers.jpg" alt="Settlers" style="width:100%">
+            <div class="caption text-center">
+              <p>Settlers: G=[7, 0], R=[15, 0]</p>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="thumbnail">
+          <a href="out_path/nativity.jpg">
+            <img src="out_path/nativity.jpg" alt="Nativity" style="width:100%">
+            <div class="caption text-center">
+              <p>Nativity: G=[3, 1], R=[7, 0]</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="row center-block">
+      <div class="offset-md-2 col-md-4">
+        <div class="thumbnail">
+          <a href="out_path/harvesters.jpg">
+            <img src="out_path/harvesters.jpg" alt="Harvesters" style="width:100%">
+            <div class="caption text-center">
+              <p>Harvesters: G=[64, 32], R=[128, 0]</p>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="thumbnail">
+          <a href="out_path/emir.jpg">
+            <img src="out_path/emir.jpg" alt="Emir" style="width:100%">
+            <div class="caption text-center">
+              <p>Emir: B=[0, 0], R=[64, 32]</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="row center-block">
+      <div class="offset-md-2 col-md-4">
+        <div class="thumbnail">
+          <a href="out_path/icon.jpg">
+            <img src="out_path/icon.jpg" alt="Icon" style="width:100%">
+            <div class="caption text-center">
+              <p>Icon: G=[32, 0], R=[96, 32]</p>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="thumbnail">
+          <a href="out_path/lady.jpg">
+            <img src="out_path/lady.jpg" alt="Lady" style="width:100%">
+            <div class="caption text-center">
+              <p>Lady: G=[64, 0], R=[128, 0]</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="row center-block">
+      <div class="offset-md-2 col-md-4">
+        <div class="thumbnail">
+          <a href="out_path/self_portrait.jpg">
+            <img src="out_path/self_portrait.jpg" alt="Self Portrait" style="width:100%">
+            <div class="caption text-center">
+              <p>Self Portrait: B=[0, 0], R=[96, 0]</p>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="thumbnail">
+          <a href="out_path/three_generations.jpg">
+            <img src="out_path/three_generations.jpg" alt="Three Generations" style="width:100%">
+            <div class="caption text-center">
+              <p>Three Generations: G=[64, 0], R=[128, 0]</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="row center-block">
+      <div class="offset-md-2 col-md-4">
+        <div class="thumbnail">
+          <a href="out_path/train.jpg">
+            <img src="out_path/train.jpg" alt="Train" style="width:100%">
+            <div class="caption text-center">
+              <p>Train: G=[32, 0], R=[96, 32]</p>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="thumbnail">
+          <a href="out_path/turkmen.jpg">
+            <img src="out_path/turkmen.jpg" alt="Turkmen" style="width:100%">
+            <div class="caption text-center">
+              <p>Turkmen: G=[64, 32], R=[128, 32]</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="row center-block">
+      <div class="offset-md-2 col-md-4">
+        <div class="thumbnail">
+          <a href="out_path/village.jpg">
+            <img src="out_path/village.jpg" alt="Village" style="width:100%">
+            <div class="caption text-center">
+              <p>Village: G=[64, 0], R=[160, 32]</p>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="thumbnail">
+          <a href="out_path/porch.jpg">
+            <img src="out_path/porch.jpg" alt="Porch" style="width:100%">
+            <div class="caption text-center">
+              <p>Porch: G=[1, 0], R=[2, 0]</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="row center-block">
+      <div class="offset-md-2 col-md-4">
+        <div class="thumbnail">
+          <a href="out_path/house.jpg">
+            <img src="out_path/house.jpg" alt="House" style="width:100%">
+            <div class="caption text-center">
+              <p>House: G=[3, 0], R=[7, 0]</p>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="thumbnail">
+          <a href="out_path/guardhouse.jpg">
+            <img src="out_path/guardhouse.jpg" alt="Guardhouse" style="width:100%">
+            <div class="caption text-center">
+              <p>Guardhouse: G=[0, 1], R=[1, 2]</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  </body>
+</html>
